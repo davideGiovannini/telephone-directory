@@ -10,16 +10,25 @@ import com.demiurgo.telephonedirectory.R
 import com.demiurgo.telephonedirectory.db.database
 import com.demiurgo.telephonedirectory.db.getEntries
 import com.demiurgo.telephonedirectory.model.Entry
+import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent
+import rx.Observable
 
 /**
  * Created by demiurgo on 4/14/16.
  */
-class EntryListAdapter(val ctx: Context, var listener: EntryListListener) : RecyclerView.Adapter<EntryListAdapter.ViewHolder>() {
+class EntryListAdapter(val ctx: Context,
+                       var listener: EntryListListener,
+                       val queriesObservable: Observable<TextViewAfterTextChangeEvent>) : RecyclerView.Adapter<EntryListAdapter.ViewHolder>() {
 
     var mValues: List<Entry> = emptyList()
+    var query: String? = null
 
     init {
         registerAdapterDataObserver(DataSetListener())
+        queriesObservable.subscribe {
+            query = it.editable().toString()
+            notifyDataSetChanged()
+        }
     }
 
 
@@ -59,7 +68,9 @@ class EntryListAdapter(val ctx: Context, var listener: EntryListListener) : Recy
 
     private inner class DataSetListener : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
-            mValues = ctx.database.use { getEntries(/*TODO add query parameter*/) }
+            mValues = ctx.database.use {
+                if (query.isNullOrBlank()) getEntries() else getEntries(query)
+            }
         }
     }
 }

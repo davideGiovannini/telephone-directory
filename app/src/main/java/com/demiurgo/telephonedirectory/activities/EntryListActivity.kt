@@ -9,10 +9,13 @@ import com.demiurgo.telephonedirectory.adapters.EntryListListener
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragListener
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment
 import com.demiurgo.telephonedirectory.model.Entry
+import com.jakewharton.rxbinding.widget.afterTextChangeEvents
 import kotlinx.android.synthetic.main.activity_entry_list.*
 import kotlinx.android.synthetic.main.entry_list.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.withArguments
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * An activity representing a list of Entries. This activity
@@ -54,7 +57,13 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = EntryListAdapter(ctx = this, listener = this)
+        recyclerView.adapter = EntryListAdapter(ctx = this,
+                                                listener = this,
+                                                //Update list when query term changes
+                                                queriesObservable = searchField.afterTextChangeEvents()
+                                                        .debounce(500, TimeUnit.MILLISECONDS)
+                                                        .observeOn(AndroidSchedulers.mainThread()))
+
         //Fetch the data from the db
         recyclerView.adapter.notifyDataSetChanged()
     }
@@ -67,7 +76,7 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
     private fun nextPage(id: Long?) {
         if (mTwoPane) {
             mFragment = if (id == null) EntryDetailFragment()
-                           else EntryDetailFragment().withArguments(EntryDetailFragment.ARG_ITEM_ID to id)
+                        else EntryDetailFragment().withArguments(EntryDetailFragment.ARG_ITEM_ID to id)
             mFragment!!.listener = this
             supportFragmentManager.beginTransaction().replace(R.id.entry_detail_container, mFragment).commit()
         } else {
@@ -94,5 +103,4 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
         entry_list.adapter.notifyDataSetChanged()
         return super.onNavigateUp()
     }
-
 }

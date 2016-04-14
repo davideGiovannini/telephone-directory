@@ -88,6 +88,7 @@ fun SQLiteDatabase.getEntries(query: String? = null): List<Entry> =
         when (query) {
             null -> select(ENTRIES_TABLE).parseList(Entry.parser)
             else -> select(ENTRIES_TABLE)
-                    .where("{query} in $ROW_FIRST_NAME or {query} in $ROW_LAST_NAME or {query} in $ROW_PHONE")
+                    .where("$ROW_FIRST_NAME like {query} or $ROW_LAST_NAME  like {query} or $ROW_PHONE like {query} ",
+                            "query" to "%$query%")
                     .parseList(Entry.parser)
         }
