@@ -1,11 +1,13 @@
-package com.demiurgo.telephonedirectory
+package com.demiurgo.telephonedirectory.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.demiurgo.telephonedirectory.R
+import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment
 import kotlinx.android.synthetic.main.activity_entry_detail.*
+import org.jetbrains.anko.support.v4.withArguments
 
 /**
  * An activity representing a single Entry detail screen. This
@@ -21,8 +23,9 @@ class EntryDetailActivity : AppCompatActivity() {
 
         setSupportActionBar(detail_toolbar)
 
-        fab.setOnClickListener{
-            Snackbar.make(it, "Replace with your own detail action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
+        fab.setOnClickListener {
+
+
         }
 
         // Show the Up button in the action bar.
@@ -40,11 +43,9 @@ class EntryDetailActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            val arguments = Bundle()
-            arguments.putString(EntryDetailFragment.ARG_ITEM_ID,
-                    intent.getStringExtra(EntryDetailFragment.ARG_ITEM_ID))
-            val fragment = EntryDetailFragment()
-            fragment.arguments = arguments
+            val fragment = EntryDetailFragment().withArguments(
+                    EntryDetailFragment.ARG_ITEM_ID to intent.getStringExtra(EntryDetailFragment.ARG_ITEM_ID)
+            )
             supportFragmentManager.beginTransaction().add(R.id.entry_detail_container, fragment).commit()
         }
     }

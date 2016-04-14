@@ -1,4 +1,4 @@
-package com.demiurgo.telephonedirectory
+package com.demiurgo.telephonedirectory.fragments
 
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
@@ -7,7 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.demiurgo.telephonedirectory.dummy.DummyContent
+import com.demiurgo.telephonedirectory.R
+import com.demiurgo.telephonedirectory.model.Entry
 
 /**
  * A fragment representing a single Entry detail screen.
@@ -20,7 +21,7 @@ class EntryDetailFragment : Fragment() {
     /**
      * The dummy content this fragment is presenting.
      */
-    private var mItem: DummyContent.DummyItem? = null
+    private var mItem: Entry? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +30,12 @@ class EntryDetailFragment : Fragment() {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP[arguments.getString(ARG_ITEM_ID)]
+            mItem =  null //TODO put query
 
             val activity = this.activity
             val appBarLayout = activity.findViewById(R.id.toolbar_layout) as CollapsingToolbarLayout?
             if (appBarLayout != null) {
-                appBarLayout.title = mItem!!.content
+                appBarLayout.title = mItem!!.firstName +" " + mItem!!.lastName
             }
         }
     }
@@ -45,7 +46,7 @@ class EntryDetailFragment : Fragment() {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            (rootView.findViewById(R.id.entry_detail) as TextView).text = mItem!!.details
+            (rootView.findViewById(R.id.entry_detail) as TextView).text = mItem!!.toString()
         }
 
         return rootView
