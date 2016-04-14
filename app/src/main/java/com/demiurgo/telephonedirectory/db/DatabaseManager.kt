@@ -15,6 +15,7 @@ const val ROW_ID = "_id"
 const val ROW_FIRST_NAME = "firstName"
 const val ROW_LAST_NAME = "lastName"
 const val ROW_PHONE = "phoneNumber"
+private const val TAG = "DatabaseManager"
 
 class DatabaseManager(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "TelephoneDirectoryDB", null, 1) {
 
@@ -36,9 +37,6 @@ class DatabaseManager(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "TelephoneDir
 
 
     companion object {
-        const val TAG = "DatabaseManager"
-
-
         private var instance: DatabaseManager? = null
 
         fun getInstance(ctx: Context): DatabaseManager {
@@ -66,3 +64,18 @@ fun SQLiteDatabase.insertEntry(entry: Entry) {
             ROW_PHONE to entry.phoneNumber
     )
 }
+
+
+fun SQLiteDatabase.getEntry(id: Long): Entry =
+        select(ENTRIES_TABLE)
+                .where("$ROW_ID = {id}", "id" to id)
+                .exec { parseSingle(Entry.parser) }
+
+
+fun SQLiteDatabase.getEntries(query: String? = null): List<Entry> =
+        when (query) {
+            null -> select(ENTRIES_TABLE).parseList(Entry.parser)
+            else -> select(ENTRIES_TABLE)
+                    .where("{query} in $ROW_FIRST_NAME or {query} in $ROW_LAST_NAME or {query} in $ROW_PHONE")
+                    .parseList(Entry.parser)
+        }

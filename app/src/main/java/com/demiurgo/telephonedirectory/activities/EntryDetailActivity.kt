@@ -25,7 +25,6 @@ class EntryDetailActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
 
-
         }
 
         // Show the Up button in the action bar.
@@ -44,7 +43,7 @@ class EntryDetailActivity : AppCompatActivity() {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             val fragment = EntryDetailFragment().withArguments(
-                    EntryDetailFragment.ARG_ITEM_ID to intent.getStringExtra(EntryDetailFragment.ARG_ITEM_ID)
+                    EntryDetailFragment.ARG_ITEM_ID to intent.getLongExtra(EntryDetailFragment.ARG_ITEM_ID, -1)
             )
             supportFragmentManager.beginTransaction().add(R.id.entry_detail_container, fragment).commit()
         }

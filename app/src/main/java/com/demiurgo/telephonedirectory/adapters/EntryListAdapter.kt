@@ -7,10 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.demiurgo.telephonedirectory.R
-import com.demiurgo.telephonedirectory.db.ENTRIES_TABLE
 import com.demiurgo.telephonedirectory.db.database
+import com.demiurgo.telephonedirectory.db.getEntries
 import com.demiurgo.telephonedirectory.model.Entry
-import org.jetbrains.anko.db.select
 
 /**
  * Created by demiurgo on 4/14/16.
@@ -20,7 +19,7 @@ class EntryListAdapter(val ctx: Context, var listener: EntryListListener) : Recy
     var mValues: List<Entry> = emptyList()
 
     init {
-        registerAdapterDataObserver(DatasetListener())
+        registerAdapterDataObserver(DataSetListener())
     }
 
 
@@ -30,39 +29,37 @@ class EntryListAdapter(val ctx: Context, var listener: EntryListListener) : Recy
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.mItem = mValues[position]
-        holder.mIdView.text = mValues[position].phoneNumber
-        holder.mContentView.text = mValues[position].toString()
+        holder.mItemPos = position
+
+        holder.mPhoneView.text = mValues[position].phoneNumber
+        holder.mNameView.text = mValues[position].firstName
+        holder.mSurNameView.text = mValues[position].lastName
 
         holder.mView.setOnClickListener {
-            listener.onEntrySelection(holder.mItem!!)
+            listener.onEntrySelection(mValues[holder.mItemPos])
         }
     }
 
-    override fun getItemCount(): Int {
-        return mValues.size
-    }
+    override fun getItemCount(): Int = mValues.size
+
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView
-        val mContentView: TextView
-        var mItem: Entry? = null
+        val mNameView: TextView
+        val mSurNameView: TextView
+        val mPhoneView: TextView
+        var mItemPos: Int = -1
 
         init {
-            mIdView = mView.findViewById(R.id.id) as TextView
-            mContentView = mView.findViewById(R.id.content) as TextView
-        }
-
-        override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
+            mNameView = mView.findViewById(R.id.firstName) as TextView
+            mSurNameView = mView.findViewById(R.id.lastName) as TextView
+            mPhoneView = mView.findViewById(R.id.phoneNumber) as TextView
         }
     }
 
 
-    inner class DatasetListener : RecyclerView.AdapterDataObserver() {
+    private inner class DataSetListener : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
-            super.onChanged()
-            mValues = ctx.database.use { select(ENTRIES_TABLE).parseList(Entry.parser) }
+            mValues = ctx.database.use { getEntries(/*TODO add query parameter*/) }
         }
     }
 }

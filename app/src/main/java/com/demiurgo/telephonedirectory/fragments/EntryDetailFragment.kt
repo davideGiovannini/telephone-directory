@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.demiurgo.telephonedirectory.R
+import com.demiurgo.telephonedirectory.db.database
+import com.demiurgo.telephonedirectory.db.getEntry
 import com.demiurgo.telephonedirectory.model.Entry
 
 /**
@@ -27,10 +29,9 @@ class EntryDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (arguments.containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem =  null //TODO put query
+            mItem =  context.database.use {
+                getEntry(arguments.get(ARG_ITEM_ID) as Long)
+            }
 
             val activity = this.activity
             val appBarLayout = activity.findViewById(R.id.toolbar_layout) as CollapsingToolbarLayout?
