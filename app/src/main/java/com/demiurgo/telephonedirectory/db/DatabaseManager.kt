@@ -65,6 +65,18 @@ fun SQLiteDatabase.insertEntry(entry: Entry) {
     )
 }
 
+fun SQLiteDatabase.updateEntry(entry: Entry) {
+    if (!entry.isValid()) {
+        throw Exception("Attempting to update invalid entry in db! $entry")
+    }
+
+    update(ENTRIES_TABLE,
+            ROW_FIRST_NAME to entry.firstName,
+            ROW_LAST_NAME to entry.lastName,
+            ROW_PHONE to entry.phoneNumber)
+            .where("$ROW_ID = {id}", "id" to entry.id).exec()
+}
+
 
 fun SQLiteDatabase.getEntry(id: Long): Entry =
         select(ENTRIES_TABLE)

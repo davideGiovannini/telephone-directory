@@ -39,6 +39,17 @@ dependencies {
     compile 'org.jetbrains.anko:anko-recyclerview-v7:0.8.3'
     compile 'org.jetbrains.anko:anko-cardview-v7:0.8.3'
     compile 'org.jetbrains.anko:anko-sqlite:0.8.3'
+
+
+
+
+    compile 'com.jakewharton.rxbinding:rxbinding-kotlin:0.4.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-support-v4-kotlin:0.4.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7-kotlin:0.4.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-design-kotlin:0.4.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7-kotlin:0.4.0'
+
+
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'

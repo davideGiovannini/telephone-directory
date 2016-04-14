@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">TelephoneDirectory</string>
     <string name="title_entry_detail">Entry Detail</string>
+
+    <string name="save_button">Save Entry</string>
+    <string name="update_button">Update Entry</string>
 </resources>

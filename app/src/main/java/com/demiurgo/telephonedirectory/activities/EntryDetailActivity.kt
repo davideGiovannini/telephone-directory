@@ -1,12 +1,13 @@
 package com.demiurgo.telephonedirectory.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.demiurgo.telephonedirectory.R
+import com.demiurgo.telephonedirectory.fragments.EntryDetailFragListener
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment
 import kotlinx.android.synthetic.main.activity_entry_detail.*
+import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.support.v4.withArguments
 
 /**
@@ -15,7 +16,7 @@ import org.jetbrains.anko.support.v4.withArguments
  * item details are presented side-by-side with a list of items
  * in a [EntryListActivity].
  */
-class EntryDetailActivity : AppCompatActivity() {
+class EntryDetailActivity : AppCompatActivity(), EntryDetailFragListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +24,6 @@ class EntryDetailActivity : AppCompatActivity() {
 
         setSupportActionBar(detail_toolbar)
 
-        fab.setOnClickListener {
-
-        }
 
         // Show the Up button in the action bar.
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -42,9 +40,15 @@ class EntryDetailActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            val fragment = EntryDetailFragment().withArguments(
-                    EntryDetailFragment.ARG_ITEM_ID to intent.getLongExtra(EntryDetailFragment.ARG_ITEM_ID, -1)
-            )
+
+            var hasId = intent.hasExtra(EntryDetailFragment.ARG_ITEM_ID)
+
+
+            val fragment = if (hasId) EntryDetailFragment().withArguments(EntryDetailFragment.ARG_ITEM_ID to intent.getLongExtra(EntryDetailFragment.ARG_ITEM_ID, -1))
+            else EntryDetailFragment()
+
+            fragment.listener = this
+
             supportFragmentManager.beginTransaction().add(R.id.entry_detail_container, fragment).commit()
         }
     }
@@ -52,15 +56,17 @@ class EntryDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            navigateUpTo(Intent(this, EntryListActivity::class.java))
+            navigateUpTo(intentFor<EntryListActivity>())
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSave() {
+        navigateUpTo(intentFor<EntryListActivity>())
+    }
+
+    override fun onUpdate() {
+        navigateUpTo(intentFor<EntryListActivity>())
     }
 }

@@ -11,9 +11,17 @@ data class Entry(var id: Long,
                  var lastName: String,
                  var phoneNumber: String) {
 
-    fun isValid(): Boolean {
-        return firstName.isNotBlank() && lastName.isNotBlank() && phoneRegexp.matches(phoneNumber)
-    }
+    constructor(firstName: String,
+                lastName: String,
+                phoneNumber: String) : this(-1, firstName, lastName, phoneNumber)
+
+    fun isValid(): Boolean =
+            firstName.isNotBlank() && lastName.isNotBlank() && phoneRegexp.matches(phoneNumber)
+
+
+    fun hasSameData(entry: Entry): Boolean =
+            firstName == entry.firstName && lastName == entry.lastName && phoneNumber == entry.phoneNumber
+
 
     companion object {
         private val phoneRegexp = Regex("^\\+\\d+ \\d+ \\d{6,}$")
