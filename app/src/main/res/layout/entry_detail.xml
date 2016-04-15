@@ -1,8 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".fragments.EntryDetailFragment">
 
 
@@ -10,28 +9,43 @@
         android:id="@+id/firstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="first name "
-        android:inputType="textPersonName"/>
+        android:hint="@string/first_name"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/lastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="last name "
-        android:inputType="textPersonName"/>
+        android:layout_below="@id/firstName"
+        android:hint="@string/last_name"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/phoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="phone (ex: +39 123 123456) "
-        android:inputType="phone"/>
+        android:layout_below="@id/lastName"
+        android:hint="@string/phone_hint"
+        android:inputType="phone" />
 
     <Button
         android:id="@+id/saveOrUpdate"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phoneNumber"
+        android:layout_centerInParent="true"
         android:visibility="invisible"
-        />
+        tools:text="update"
+        tools:visibility="visible" />
 
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/import_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        tools:visibility="visible"
+        android:visibility="invisible"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_menu_search" />
+
+</RelativeLayout>

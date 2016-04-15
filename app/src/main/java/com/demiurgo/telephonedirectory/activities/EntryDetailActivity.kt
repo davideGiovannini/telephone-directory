@@ -1,14 +1,20 @@
 package com.demiurgo.telephonedirectory.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.demiurgo.telephonedirectory.R
+import com.demiurgo.telephonedirectory.extractContactInformation
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragListener
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment
+import com.demiurgo.telephonedirectory.model.Entry
+import com.demiurgo.telephonedirectory.model.FutureEntry
 import kotlinx.android.synthetic.main.activity_entry_detail.*
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.support.v4.withArguments
+import rx.Observable
 
 /**
  * An activity representing a single Entry detail screen. This
@@ -17,6 +23,8 @@ import org.jetbrains.anko.support.v4.withArguments
  * in a [EntryListActivity].
  */
 class EntryDetailActivity : AppCompatActivity(), EntryDetailFragListener {
+
+    private val futureEntry = FutureEntry()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,4 +77,25 @@ class EntryDetailActivity : AppCompatActivity(), EntryDetailFragListener {
     override fun onUpdate() {
         navigateUpTo(intentFor<EntryListActivity>())
     }
+
+    override fun requestContact(): Observable<Entry?> {
+        val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+        startActivityForResult(intent, 1)
+        return Observable.create(futureEntry)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, iData: Intent?) {
+        when(requestCode){
+            1 ->{
+                if(resultCode == RESULT_OK){
+                    val contactData = iData?.data;
+                    futureEntry.sendValue(extractContactInformation(contactData))
+                }else{
+                    futureEntry.sendValue(null)
+                }
+            }
+        }
+    }
+
 }

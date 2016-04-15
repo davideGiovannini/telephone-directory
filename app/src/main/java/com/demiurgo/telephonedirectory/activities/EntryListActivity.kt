@@ -1,19 +1,24 @@
 package com.demiurgo.telephonedirectory.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import com.demiurgo.telephonedirectory.R
 import com.demiurgo.telephonedirectory.adapters.EntryListAdapter
 import com.demiurgo.telephonedirectory.adapters.EntryListListener
+import com.demiurgo.telephonedirectory.extractContactInformation
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragListener
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment
 import com.demiurgo.telephonedirectory.model.Entry
+import com.demiurgo.telephonedirectory.model.FutureEntry
 import com.jakewharton.rxbinding.widget.afterTextChangeEvents
 import kotlinx.android.synthetic.main.activity_entry_list.*
 import kotlinx.android.synthetic.main.entry_list.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.withArguments
+import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
@@ -33,6 +38,7 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
      */
     private var mTwoPane: Boolean = false
     private var mFragment: EntryDetailFragment? = null
+    private val futureEntry = FutureEntry()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +104,25 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
         supportFragmentManager.beginTransaction().remove(mFragment).commit()
     }
 
+    override fun requestContact(): Observable<Entry?> {
+        val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+        startActivityForResult(intent, 1)
+        return Observable.create(futureEntry)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, iData: Intent?) {
+        when(requestCode){
+            1 ->{
+                if(resultCode == RESULT_OK){
+                    val contactData = iData?.data;
+                    futureEntry.sendValue(extractContactInformation(contactData))
+                }else{
+                    futureEntry.sendValue(null)
+                }
+            }
+        }
+    }
 
     override fun onNavigateUp(): Boolean {
         entry_list.adapter.notifyDataSetChanged()

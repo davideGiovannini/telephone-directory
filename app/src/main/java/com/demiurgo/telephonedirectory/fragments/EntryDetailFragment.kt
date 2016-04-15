@@ -14,6 +14,7 @@ import com.demiurgo.telephonedirectory.db.updateEntry
 import com.demiurgo.telephonedirectory.model.Entry
 import com.jakewharton.rxbinding.widget.afterTextChangeEvents
 import kotlinx.android.synthetic.main.entry_detail.view.*
+import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
@@ -56,6 +57,18 @@ class EntryDetailFragment : Fragment() {
             rootView.saveOrUpdate.setText(R.string.update_button)
         } else {
             rootView.saveOrUpdate.setText(R.string.save_button)
+            rootView.import_contact.visibility = View.VISIBLE
+            rootView.import_contact.setOnClickListener {
+                listener?.requestContact()
+                        ?.subscribeOn(AndroidSchedulers.mainThread())
+                        ?.subscribe {
+                            if (it != null) {
+                                rootView.firstName.setText(it.firstName)
+                                rootView.lastName.setText(it.lastName)
+                                rootView.phoneNumber.setText(it.phoneNumber)
+                            }
+                        }
+            }
         }
 
 
@@ -113,5 +126,6 @@ class EntryDetailFragment : Fragment() {
 interface EntryDetailFragListener {
     fun onSave()
     fun onUpdate()
+    fun requestContact(): Observable<Entry?>
 }
 
