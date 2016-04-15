@@ -3,6 +3,7 @@ package com.demiurgo.telephonedirectory.activities
 import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import com.demiurgo.telephonedirectory.R
@@ -84,7 +85,10 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
             mFragment = if (id == null) EntryDetailFragment()
                         else EntryDetailFragment().withArguments(EntryDetailFragment.ARG_ITEM_ID to id)
             mFragment!!.listener = this
-            supportFragmentManager.beginTransaction().replace(R.id.entry_detail_container, mFragment).commit()
+            supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.slide_in, R.animator.slide_out)
+                    .replace(R.id.entry_detail_container, mFragment)
+                    .commit()
         } else {
             if (id == null) {
                 startActivity<EntryDetailActivity>()
@@ -96,12 +100,18 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
 
     override fun onSave() {
         entry_list.adapter.notifyDataSetChanged()
-        supportFragmentManager.beginTransaction().remove(mFragment).commit()
+        supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.animator.slide_in, R.animator.slide_out)
+                .remove(mFragment)
+                .commit()
     }
 
     override fun onUpdate() {
         entry_list.adapter.notifyDataSetChanged()
-        supportFragmentManager.beginTransaction().remove(mFragment).commit()
+        supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.animator.slide_in, R.animator.slide_out)
+                .remove(mFragment)
+                .commit()
     }
 
     override fun requestContact(): Observable<Entry?> {
