@@ -28,7 +28,7 @@
         android:hint="@string/phone_hint"
         android:inputType="phone" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/saveOrUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
         tools:text="update"
         tools:visibility="visible" />
 
-    <ImageButton
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/import_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,6 +46,6 @@
         tools:visibility="visible"
         android:visibility="invisible"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_search" />
+        android:src="@drawable/ic_contacts_black_36dp" />
 
 </RelativeLayout>
