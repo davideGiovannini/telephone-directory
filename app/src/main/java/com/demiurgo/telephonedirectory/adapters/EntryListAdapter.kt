@@ -11,6 +11,7 @@ import com.demiurgo.telephonedirectory.db.database
 import com.demiurgo.telephonedirectory.db.getEntries
 import com.demiurgo.telephonedirectory.model.Entry
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent
+import kotlinx.android.synthetic.main.entry_list_content.view.*
 import rx.Observable
 
 /**
@@ -44,7 +45,7 @@ class EntryListAdapter(val ctx: Context,
         holder.mNameView.text = mValues[position].firstName
         holder.mSurNameView.text = mValues[position].lastName
 
-        holder.mView.setOnClickListener {
+        holder.mView.gridView.setOnClickListener {
             listener.onEntrySelection(mValues[holder.mItemPos])
         }
     }

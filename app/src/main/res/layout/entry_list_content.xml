@@ -6,8 +6,11 @@
     android:layout_margin="2dp">
 
     <GridLayout
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
         android:columnCount="2">
 
         <TextView
@@ -30,9 +33,9 @@
             android:id="@+id/phoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
             android:layout_margin="@dimen/text_margin"
             android:textAppearance="?attr/textAppearanceListItem"
-            android:layout_columnSpan="2"
             tools:text="+39 43 123456" />
     </GridLayout>
 
