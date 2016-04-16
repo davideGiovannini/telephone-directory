@@ -60,9 +60,9 @@ class EntryListAdapter(val ctx: Context,
         var mItemPos: Int = -1
 
         init {
-            mNameView = mView.findViewById(R.id.firstName) as TextView
-            mSurNameView = mView.findViewById(R.id.lastName) as TextView
-            mPhoneView = mView.findViewById(R.id.phoneNumber) as TextView
+            mNameView = mView.firstName
+            mSurNameView = mView.lastName
+            mPhoneView = mView.phoneNumber
         }
     }
 

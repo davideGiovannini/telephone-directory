@@ -9,6 +9,7 @@ import com.demiurgo.telephonedirectory.R
 import com.demiurgo.telephonedirectory.extractContactInformation
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragListener
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment
+import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment.Companion.ARG_ITEM_ID
 import com.demiurgo.telephonedirectory.model.Entry
 import com.demiurgo.telephonedirectory.model.FutureEntry
 import kotlinx.android.synthetic.main.activity_entry_detail.*
@@ -49,11 +50,11 @@ class EntryDetailActivity : AppCompatActivity(), EntryDetailFragListener {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
 
-            var hasId = intent.hasExtra(EntryDetailFragment.ARG_ITEM_ID)
+            var hasId = intent.hasExtra(ARG_ITEM_ID)
 
 
-            val fragment = if (hasId) EntryDetailFragment().withArguments(EntryDetailFragment.ARG_ITEM_ID to intent.getLongExtra(EntryDetailFragment.ARG_ITEM_ID, -1))
-            else EntryDetailFragment()
+            val fragment = if (hasId) EntryDetailFragment().withArguments(ARG_ITEM_ID to intent.getLongExtra(ARG_ITEM_ID, -1))
+                           else EntryDetailFragment()
 
             fragment.listener = this
 
@@ -70,11 +71,7 @@ class EntryDetailActivity : AppCompatActivity(), EntryDetailFragListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onSave() {
-        navigateUpTo(intentFor<EntryListActivity>())
-    }
-
-    override fun onUpdate() {
+    override fun onSaveOrUpdate() {
         navigateUpTo(intentFor<EntryListActivity>())
     }
 

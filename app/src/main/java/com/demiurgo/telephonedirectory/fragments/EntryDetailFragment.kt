@@ -73,7 +73,7 @@ class EntryDetailFragment : Fragment() {
             importContact.visibility = View.VISIBLE
             importContact.setOnClickListener {
                 listener?.requestContact()
-                        ?.subscribeOn(AndroidSchedulers.mainThread())
+                        ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribe {
                             if (it != null) {
                                 firstName.setText(it.firstName)
@@ -92,12 +92,11 @@ class EntryDetailFragment : Fragment() {
             if (entry.isValid()) {
                 if (mItem == null) {
                     context.database.use { insertEntry(entry) }
-                    listener?.onSave()
                 } else {
                     entry.id = mItem!!.id
                     context.database.use { updateEntry(entry) }
-                    listener?.onUpdate()
                 }
+                listener?.onSaveOrUpdate()
             }
         }
 
@@ -109,19 +108,21 @@ class EntryDetailFragment : Fragment() {
                 .skip(1)
                 .debounce(INPUT_DEBOUNCE, TimeUnit.MILLISECONDS)
                 .mergeWith(lastName.afterTextChangeEvents()
-                        .skip(1)
-                        .debounce(INPUT_DEBOUNCE, TimeUnit.MILLISECONDS)
+                                   .skip(1)
+                                   .debounce(INPUT_DEBOUNCE, TimeUnit.MILLISECONDS)
                 ).mergeWith(phoneNumber.afterTextChangeEvents()
-                .skip(1)
-                .debounce(INPUT_DEBOUNCE, TimeUnit.MILLISECONDS)
-        )
+                                       .skip(1)
+                                       .debounce(INPUT_DEBOUNCE, TimeUnit.MILLISECONDS)
+                )
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     val entry = Entry(firstName.text.toString(),
                             lastName.text.toString(),
                             phoneNumber.text.toString())
 
-                    val newVisibility = if(entry.isValid() && mItem?.hasSameData(entry)?.not() ?: true){
+                    val entryDifferentFromItem = mItem?.hasSameData(entry)?.not() ?: true
+
+                    val newVisibility = if(entry.isValid() && entryDifferentFromItem){
                                             View.VISIBLE
                                         }else{
                                             View.INVISIBLE
@@ -164,8 +165,7 @@ class EntryDetailFragment : Fragment() {
 }
 
 interface EntryDetailFragListener {
-    fun onSave()
-    fun onUpdate()
+    fun onSaveOrUpdate()
     fun requestContact(): Observable<Entry?>
 }
 

@@ -3,7 +3,6 @@ package com.demiurgo.telephonedirectory.activities
 import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import com.demiurgo.telephonedirectory.R
@@ -54,13 +53,9 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
 
         setupRecyclerView(entry_list)
 
-        if (findViewById(R.id.entry_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true
-        }
+        // If this view is present, then the
+        // activity should be in two-pane mode.
+        mTwoPane = entry_detail_container != null
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
@@ -98,15 +93,7 @@ class EntryListActivity : AppCompatActivity(), EntryListListener, EntryDetailFra
         }
     }
 
-    override fun onSave() {
-        entry_list.adapter.notifyDataSetChanged()
-        supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.animator.slide_in, R.animator.slide_out)
-                .remove(mFragment)
-                .commit()
-    }
-
-    override fun onUpdate() {
+    override fun onSaveOrUpdate() {
         entry_list.adapter.notifyDataSetChanged()
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.animator.slide_in, R.animator.slide_out)
