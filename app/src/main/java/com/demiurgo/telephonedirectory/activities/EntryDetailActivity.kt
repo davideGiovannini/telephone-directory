@@ -1,17 +1,22 @@
 package com.demiurgo.telephonedirectory.activities
 
+import android.Manifest.permission.READ_CONTACTS
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.demiurgo.telephonedirectory.R
+import com.demiurgo.telephonedirectory.READ_CONTACTS_REQUEST
 import com.demiurgo.telephonedirectory.extractContactInformation
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragListener
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment
 import com.demiurgo.telephonedirectory.fragments.EntryDetailFragment.Companion.ARG_ITEM_ID
 import com.demiurgo.telephonedirectory.model.Entry
 import com.demiurgo.telephonedirectory.model.FutureEntry
+import com.demiurgo.telephonedirectory.requestPermission
 import kotlinx.android.synthetic.main.activity_entry_detail.*
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.support.v4.withArguments
@@ -76,9 +81,37 @@ class EntryDetailActivity : AppCompatActivity(), EntryDetailFragListener {
     }
 
     override fun requestContact(): Observable<Entry?> {
-        val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
-        startActivityForResult(intent, 1)
+
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this, READ_CONTACTS) == PERMISSION_GRANTED) {
+            val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+            startActivityForResult(intent, 1)
+        }else{
+            requestPermission()
+        }
+
         return Observable.create(futureEntry)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            READ_CONTACTS_REQUEST -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.size > 0
+                        && grantResults[0] == PERMISSION_GRANTED) {
+
+                    val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+                    startActivityForResult(intent, 1)
+
+                } else {
+                    futureEntry.sendValue(null)
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+        }
     }
 
 
